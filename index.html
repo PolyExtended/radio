@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Poly Radio</title>
+  <link rel="stylesheet" href="https://polyextended.github.io/nav.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<body>
+
+<header class="z-depth-1">
+  <nav class="z-depth-0 backer-dark">
+    <div class="nav-wrapper container">
+      <ul class="left">
+        <li><a href="https://polyextended.github.io/">Home</a></li>
+        <li><a href="https://polyextended.github.io/live/">PolyLive</a></li>
+        <li><a href="https://polyextended.github.io/streamlookup/">PolyLookup</a></li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <h1 class="center-align">Poly Radio</h1>
+  <div class="center-align">
+    <!-- Dropdown Trigger -->
+    <a class='dropdown-trigger btn' href='#' data-target='dropdown1'>Select Radio Station</a>
+
+    <!-- Dropdown Structure -->
+    <ul id='dropdown1' class='dropdown-content'>
+      <!-- Radio stations will be dynamically added here -->
+    </ul>
+
+    <!-- HTML5 audio player container -->
+    <div id="radio-player-container">
+      <audio id="radio-player" controls ontimeupdate="updatePlaybackTime()"></audio>
+    </div>
+  </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+<script>
+  let currentPlaybackTime = 0; // Variable to store current playback time
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // Load radio stations from JSON
+    $.getJSON("stations.json", function (data) {
+      let dropdown = $("#dropdown1");
+
+      data.forEach(function (station) {
+        let radioLink = $("<a>")
+          .text(station.name)
+          .addClass("waves-effect waves-light dropdown-item")
+          .on("click", function (e) {
+            e.preventDefault();
+            playRadio(station.url);
+          });
+
+        dropdown.append($("<li>").append(radioLink));
+      });
+
+      // Initialize the dropdown
+      $(".dropdown-trigger").dropdown();
+
+      function playRadio(url) {
+        // Set the source of the HTML5 audio player
+        document.getElementById("radio-player").src = url;
+        // Set the current playback time
+        document.getElementById("radio-player").currentTime = currentPlaybackTime;
+      }
+    });
+  });
+
+  function updatePlaybackTime() {
+    // Update the current playback time
+    currentPlaybackTime = document.getElementById("radio-player").currentTime;
+  }
+</script>
+
+</body>
+</html>
